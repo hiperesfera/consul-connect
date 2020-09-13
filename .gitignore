@@ -1,0 +1,6 @@
+terraform*
+variables.tf
+main.tf.save
+consul_connect_poc.pem
+.*
+!/.gitignore
