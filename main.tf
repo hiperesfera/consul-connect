@@ -105,7 +105,7 @@ resource "aws_elb_attachment" "aws_consul_server_elb_attachment" {
 
 # Create a new load balancer attachment
 resource "aws_elb_attachment" "aws_dashboard_server_elb_attachment" {
-  count =ra
+  count = 2
   elb      = module.elbs.dashboard_server_elb
   instance = "${element(module.consul_client_frontend.consul_client_id,count.index)}"
 }
