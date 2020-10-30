@@ -106,7 +106,7 @@ module "consul_client_frontend_prd" {
       security_groups = [module.acls.consul_connect_security_group]
       subnet_id = module.vpc.public_subnet_id
       ssh_key = aws_key_pair.ssh-key.key_name
-      number_of_servers = 1
+      number_of_servers = 2
       //consul_server_ip = module.consul_server.consul_server_ip
       user_data = "${data.template_file.consul_client_dashboard_prd.rendered}"
 }
@@ -130,7 +130,7 @@ module "consul_client_backend_prd" {
       security_groups = [module.acls.consul_connect_security_group]
       subnet_id = module.vpc.public_subnet_id
       ssh_key = aws_key_pair.ssh-key.key_name
-      number_of_servers = 1
+      number_of_servers = 2
       //consul_server_ip = module.consul_server.consul_server_ip
       user_data = "${data.template_file.consul_client_backend_prd.rendered}"
 }
@@ -150,7 +150,7 @@ resource "aws_elb_attachment" "aws_dashboard_server_elb_attachment" {
 
 # Create a new load balancer attachment
 resource "aws_elb_attachment" "aws_dashboard_server_elb_attachment_prd" {
-  count = 1
+  count = 2
   elb      = module.elbs.dashboard_server_elb_prd
   instance = "${element(module.consul_client_frontend_prd.consul_client_id,count.index)}"
 }
