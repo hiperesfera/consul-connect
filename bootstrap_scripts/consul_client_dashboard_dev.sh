@@ -19,7 +19,7 @@ echo "Creating Consul client config file"
 sudo cat >/etc/consul.d/consul.hcl <<-_EOCCF
 {
     "datacenter" : "AWS_DATACENTER_ONE",
-    "node_name" : "CLIENT-$ID",
+    "node_name" : "CLIENT-$ID-DEV",
     "data_dir" : "/var/lib/consul",
     "enable_script_checks" : false,
     "enable_local_script_checks" : false,
@@ -61,7 +61,7 @@ After=network-online.target
 Type=notify
 User=consul
 Group=consul
-ExecStart=/usr/local/bin/consul connect proxy -sidecar-for dashboard
+ExecStart=/usr/local/bin/consul connect proxy -sidecar-for dashboard-dev
 ExecReload=/bin/kill -HUP $MAINPID
 ExecStop=/bin/kill -TERM $MAINPID
 KillMode=process
@@ -83,8 +83,8 @@ sudo systemctl enable sidecar
 echo "Creating Dashboard Service definition"
 sudo cat >/etc/consul.d/dashboard.hcl <<-_EOSCF
   service {
-    name = "dashboard"
-    id = "dashboard"
+    name = "dashboard-dev"
+    id = "dashboard-dev"
     port = 9002
 
     connect {
@@ -92,7 +92,7 @@ sudo cat >/etc/consul.d/dashboard.hcl <<-_EOSCF
         proxy {
           upstreams = [
             {
-              destination_name = "counting"
+              destination_name = "counting-dev"
               local_bind_port  = 5000
             }
             ]

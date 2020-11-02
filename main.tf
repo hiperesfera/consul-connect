@@ -7,7 +7,7 @@ provider "aws" {
 
 
 data "template_file" "consul_client_dashboard" {
-  template = "${file("./bootstrap_scripts/consul_client_dashboard.sh")}"
+  template = "${file("./bootstrap_scripts/consul_client_dashboard_dev.sh")}"
   vars = {
     consul_server_address = "${module.consul_server.consul_server_ip}"
     PSK = var.consul_encrypt
@@ -23,7 +23,7 @@ data "template_file" "consul_client_dashboard_prd" {
 }
 
 data "template_file" "consul_client_backend" {
-  template = "${file("./bootstrap_scripts/consul_client_backend.sh")}"
+  template = "${file("./bootstrap_scripts/consul_client_backend_dev.sh")}"
   vars = {
     consul_server_address = "${module.consul_server.consul_server_ip}"
     PSK = var.consul_encrypt
@@ -94,7 +94,7 @@ module "consul_client_frontend" {
       security_groups = [module.acls.consul_connect_security_group]
       subnet_id = module.vpc.public_subnet_id
       ssh_key = aws_key_pair.ssh-key.key_name
-      number_of_servers = 1
+      number_of_servers = 2
       //consul_server_ip = module.consul_server.consul_server_ip
       user_data = "${data.template_file.consul_client_dashboard.rendered}"
 }
@@ -118,7 +118,7 @@ module "consul_client_backend" {
       security_groups = [module.acls.consul_connect_security_group]
       subnet_id = module.vpc.public_subnet_id
       ssh_key = aws_key_pair.ssh-key.key_name
-      number_of_servers = 1
+      number_of_servers = 2
       //consul_server_ip = module.consul_server.consul_server_ip
       user_data = "${data.template_file.consul_client_backend.rendered}"
 }
@@ -143,11 +143,10 @@ resource "aws_elb_attachment" "aws_consul_server_elb_attachment" {
 
 # Create a new load balancer attachment
 resource "aws_elb_attachment" "aws_dashboard_server_elb_attachment" {
-  count = 1
-  elb      = module.elbs.dashboard_server_elb
+  count = 2
+  elb      = module.elbs.dashboard_server_elb_dev
   instance = "${element(module.consul_client_frontend.consul_client_id,count.index)}"
 }
-
 # Create a new load balancer attachment
 resource "aws_elb_attachment" "aws_dashboard_server_elb_attachment_prd" {
   count = 2
@@ -162,8 +161,8 @@ output "consul_server_elb_dns_name" {
   description = "The domain name of the load balancer"
 }
 
-output "dashboard_server_elb_dns_name" {
-  value       = module.elbs.dashboard_server_elb_dns_name
+output "dashboard_server_elb_dns_name_dev" {
+  value       = module.elbs.dashboard_server_elb_dns_name_dev
   description = "The domain name of the load balancer"
 }
 

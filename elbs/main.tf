@@ -23,8 +23,8 @@ health_check {
 
 
 ### Creating ELB
-resource "aws_elb" "elb_dashboard" {
-  name = "dashboard-elb"
+resource "aws_elb" "elb_dashboard_dev" {
+  name = "dashboard-elb-dev"
   security_groups = var.security_groups
   subnets = var.subnets
 
