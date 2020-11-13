@@ -23,7 +23,6 @@ sudo cat >/etc/consul.d/consul.hcl <<-_EOCCF
     "data_dir" : "/var/lib/consul",
     "enable_script_checks" : false,
     "enable_local_script_checks" : false,
-    "encrypt" : "${PSK}",
     "retry_join" : ["${consul_server_address}"]
 }
 _EOCCF

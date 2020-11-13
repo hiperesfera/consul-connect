@@ -28,7 +28,6 @@ sudo cat >/etc/consul.d/consul.hcl <<-_EOCF
     "enable_script_checks" : false,
     "enable_local_script_checks" : false,
     "retry_join" : ["$LOCAL_IPV4"],
-    "encrypt" : "${PSK}",
     "ui" : true
 }
 _EOCF
